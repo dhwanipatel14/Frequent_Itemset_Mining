@@ -28,6 +28,11 @@ class Apriori_algo:
     def dataChunk(self, data):
         buckets = self.fileLength()
         self.dataChunk = int((data*buckets)//100)
+    
+    def readData(self):
+        with open(self.inputFile, "r", newline="") as f:
+            bucket = f.readline
+            bucket = bucket.strip().split()
 
     
 
