@@ -12,29 +12,32 @@ class Apriori:
         with open(self.inputFile) as file:
             for i, _ in enumerate(file):
                 pass
-        
+        #print("File length: {}", i)
         return i + 1
 
     #getter
+    @property
     def support(self):
         return self._support
     
     #setter
+    @support.setter
     def support(self, s):
         self._support = int((s*self.dataChunk)//100)
 
-    
+    @property
     def dataChunk(self):
         return self._dataChunk
-    
+
+    @dataChunk.setter
     def dataChunk(self, data):
         buckets = self.fileLength()
         self._dataChunk = int((data*buckets)//100)
 
     def runApriori(self):
         start_time = datetime.datetime.now()    
-        item_count = self.itemCount()                                    # Pass one to find the frequent count
-        frequent_items = self.frequentItemCount(item_count)             # List of items which are frequent which we then use in second pass
+        itemCount = self.itemCount()                                    # Pass one to find the frequent count
+        frequent_items = self.frequentItemCount(itemCount)             # List of items which are frequent which we then use in second pass
         candidate_pair_count = self.getAllPairs(frequent_items)  # Second pass to find candidate pair
         frequent_item_set = self.frequentPairs(candidate_pair_count)   # frequent pairs 
         
@@ -51,36 +54,26 @@ class Apriori:
         print("runtime: ", round(execution_time, 2))
         print("-----------------------------------------------------")
 
-    def readData(self):
-        
-        with open(self.inputFile, "r", newline="") as f:
-            for i in range(1, self.dataChunk + 1):
-                bucket = f.readline
-                bucket = bucket.strip().split()
-                print(bucket)
-                if i == 10:
-                    break
-            yield frozenset(bucket)
 
     def itemCount(self):
-        data = self.readData()
-        count ={}
-        for bucket in data:
+        dataIterator = self.readData()
+        count = {}
+        for bucket in dataIterator:
             for item in bucket:
                 first_item = frozenset([item])
                 count[first_item] = count.get(first_item,0) + 1
-        
+        #print("Count : ", count)
         return count
     
-    def frequentItemCount(self, items_count):
+    def frequentItemCount(self, item_count):
 
         frequentItems = []
 
-        for item, count in items_count.items() :
+        for item, count in item_count.items() :
             if count >= self.support:
                 item = list(item)
                 frequentItems.append(item[0])
-        
+        #print("FREQUENT: ", frequentItems)
         return frequentItems
     
     def getAllPairs(self, frequentItems):
@@ -95,31 +88,38 @@ class Apriori:
                 if bucket[i] in frequentItems : 
                     for j in range(i+1, length):
                         if bucket[j] in frequentItems:
-                          pair = frozenset([bucket[i]], bucket[j])
+                          pair = frozenset([bucket[i], bucket[j]])
                           count[pair] = count.get(pair, 0) + 1
         
-
+        #print("ALLPairs: ", count)
         return count
 
     
     def frequentPairs(self, allPairs):
         frequentItems = {}
         for pair, count in allPairs.items():
-            if count >= self.support_threshold:
+            if count >= self.support:
                 frequentItems[pair] = count
-        
+        #print("FrequentPairs: ", frequentItems)
         return frequentItems
+
+    def readData(self):
+        with open(self.inputFile, "r", newline="") as f:
+            for i in range(1, self.dataChunk + 1):
+                bucket = f.readline()
+                bucket = bucket.strip().split()
+                yield frozenset(bucket)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process the data')
-    parser.add_argument('-f', dest='data_file', default=None, help='Name of the file containing the data')
-    parser.add_argument('-d', dest='dataChunk', default=100, help='% of data/buckets you would want to run apriory on(default=100%)')
-    parser.add_argument('-t', dest='support', default=10, help='Support Threshold in terms of percentage(default=10%)')
+    parser.add_argument('-f', dest='inputFile', default=None, help='Name of the file containing the data')
+    parser.add_argument('-d', dest='dataChunk', default=100, help='f data/buckets you would want to run apriory on(default=100%)')
+    parser.add_argument('-t', dest='supportThreshold', default=10, help='Support Threshold in terms of percentage(default=10%)')
 
     args = parser.parse_args()
-    inputFile = args.data_file
+    inputFile = args.inputFile
     dataChunk = float(args.dataChunk)
-    support = float(args.support)
+    support = float(args.supportThreshold)
 
     if inputFile is None:
         inputFile = input("Enter the data file name: ")
