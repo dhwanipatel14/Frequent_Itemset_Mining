@@ -3,7 +3,7 @@ from asyncore import read
 import datetime
 
 class Apriori:
-    def __init__(self, inputFile = None,dataChunk =100, support = 10 ):
+    def __init__(self, inputFile, dataChunk, support ):
         self.inputFile = inputFile
         self.dataChunk = dataChunk
         self.support = support
@@ -36,18 +36,19 @@ class Apriori:
 
     def runApriori(self):
         start_time = datetime.datetime.now()    
-        itemCount = self.itemCount()                                    # Pass one to find the frequent count
-        frequent_items = self.frequentItemCount(itemCount)             # List of items which are frequent which we then use in second pass
-        candidate_pair_count = self.getAllPairs(frequent_items)  # Second pass to find candidate pair
-        frequent_item_set = self.frequentPairs(candidate_pair_count)   # frequent pairs 
+        item_count = self.itemCount()                                    
+        frequent_items = self.frequentItemCount(item_count)             # List of items which are frequent which we then use in second pass
+        pairs_count = self.getAllPairs(frequent_items)  # Second pass to find candidate pair
+        frequent_item_set = self.frequentPairs(pairs_count)   # frequent pairs 
         
         end_time = datetime.datetime.now()                                    # Stop Calculating time
 
         time_diff = (end_time - start_time)
         execution_time = time_diff.total_seconds() * 1000                     # Total time required for execution 
         
-        total_candidate_pairs = len(candidate_pair_count)
+        total_candidate_pairs = len(pairs_count)
         total_frequent_pair = len(frequent_item_set)
+        print("-----------------------------------------------------")
         print("Total candidate pairs: ", total_candidate_pairs)
         print("Total frequent pairs: ", total_frequent_pair)
         print("Total false positives: ", total_candidate_pairs - total_frequent_pair)
@@ -56,9 +57,9 @@ class Apriori:
 
 
     def itemCount(self):
-        dataIterator = self.readData()
+        data = self.readData()
         count = {}
-        for bucket in dataIterator:
+        for bucket in data:
             for item in bucket:
                 first_item = frozenset([item])
                 count[first_item] = count.get(first_item,0) + 1
@@ -111,19 +112,10 @@ class Apriori:
                 yield frozenset(bucket)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Process the data')
-    parser.add_argument('-f', dest='inputFile', default=None, help='Name of the file containing the data')
-    parser.add_argument('-d', dest='dataChunk', default=100, help='f data/buckets you would want to run apriory on(default=100%)')
-    parser.add_argument('-t', dest='supportThreshold', default=10, help='Support Threshold in terms of percentage(default=10%)')
-
-    args = parser.parse_args()
-    inputFile = args.inputFile
-    dataChunk = float(args.dataChunk)
-    support = float(args.supportThreshold)
-
-    if inputFile is None:
-        inputFile = input("Enter the data file name: ")
-
+   
+    inputFile = input("Enter the data file name: ")
+    dataChunk = 100
+    support = 10
     apriori = Apriori(inputFile, dataChunk, support)
     apriori.runApriori()
 
