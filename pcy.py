@@ -1,8 +1,9 @@
 
+from datetime import datetime
 from textwrap import indent
 
 
-class pcy:
+class Pcy:
     def __init__(self, inputFile, dataChunk, support) :
         self.inputFile = inputFile
         self.dataChunk = dataChunk
@@ -44,11 +45,12 @@ class pcy:
 
    
 
-    def first_pass(self):
+    def firstPass(self):
         data = self.readData()
         count = {}
         buckets = {}
         for bucket in data:
+            bucket = list(bucket)
             for item in bucket:
                 singleton = frozenset([item])
                 count[singleton] = count.get(singleton,0) + 1
@@ -57,11 +59,12 @@ class pcy:
             bucketsLen = len(bucket)
             for i in range(bucketsLen - 1):
                 for j in range(i+1,bucketsLen):
-                    index = (int(bucket[i]), int(bucket[j]))
+                    index = hashFunction(int(bucket[i]),int(bucket[j]))
                     buckets[index] = buckets.get(index, 0) + 1
         
         frequentItems = self.frequentItemCount(count)
-
+        # print("frequentItems : ", frequentItems)
+        # print("buckets: ", buckets)
         return frequentItems, buckets
         
     
@@ -73,14 +76,79 @@ class pcy:
             if count >= self.support:
                 item = list(item)
                 frequentItems.append(item[0])
-        #print("FREQUENT: ", frequentItems)
+        print("FREQUENT: ", frequentItems)
         return frequentItems
 
-    def hashFunction(num1, num2):
-        return (num1*num2) % 5434
+    def secondPass(self, frequentItems, map):
+        data = self.readData()
+
+        count = {}
+
+        for bucket in data:
+            bucket = list(bucket)
+            length = len(bucket)
+            for i in range(length - 1):
+                if bucket[i] in frequentItems : 
+                    for j in range(i+1, length):
+                        if bucket[j] in frequentItems:
+                            if map[hashFunction(int(bucket[i]),int(bucket[j]))%5432] == 1:
+                                pair = frozenset([bucket[i], bucket[j]])
+                                count[pair] = count.get(pair, 0) + 1
+        
+        print("ALLPairs: ", count)
+        return count
+
+    def frequentPairs(self, allPairs):
+            frequentItems = {}
+            for pair, count in allPairs.items():
+                if count >= self.support:
+                    frequentItems[pair] = count
+            print("\n\n\nFrequentPairs: ", frequentItems)
+            return frequentItems
+
+    def runPcy(self):
+        start_time = datetime.now()
+
+        frequentItems , buckets = self.firstPass()
+        mapValues(buckets, self.support)
+        candidatePairs = self.secondPass(frequentItems, buckets)
+        frequentItemSet = self.frequentPairs(candidatePairs)
+
+        end_time = datetime.now()                             # Total time required for execution
+
+        time_diff = (end_time - start_time)
+        execution_time = time_diff.total_seconds() * 1000
+        
+        total_candidate_pairs = len(candidatePairs)
+        total_frequent_pair = len(frequentItemSet)
+        print("Total candidate pairs: ", total_candidate_pairs)
+        print("Total frequent pairs: ", total_frequent_pair)
+        print("Total false positives: ", total_candidate_pairs - total_frequent_pair)
+        print("runtime: ", round(execution_time, 2))
+        print("-----------------------------------------------------") 
+
+
+def mapValues(hashTable, support):
+    for key, value in hashTable.items():
+        if value < support:
+            hashTable[key] = 0
+        else:
+            hashTable[key] = 1
+
+def hashFunction( num1, num2):
+    return (num1*num2) % 5434
 
     
+if __name__ == "__main__":
 
+    dataChunk = 100
+    support= 10
+
+    
+    input_file = input("Enter the data file name: ")
+    
+    pcy = Pcy(input_file, dataChunk, support)
+    pcy.runPcy()
 
         
 
