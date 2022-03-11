@@ -49,6 +49,7 @@ class Apriori:
         total_candidate_pairs = len(pairs_count)
         total_frequent_pair = len(frequent_item_set)
         print("-----------------------------------------------------")
+        print("Total items", len(item_count))
         print("Total candidate pairs: ", total_candidate_pairs)
         print("Total frequent pairs: ", total_frequent_pair)
         print("Total false positives: ", total_candidate_pairs - total_frequent_pair)
@@ -114,8 +115,8 @@ class Apriori:
 if __name__ == '__main__':
    
     inputFile = input("Enter the data file name: ")
-    dataChunk = 100
-    support = 10
+    dataChunk = 880
+    support = 1
     apriori = Apriori(inputFile, dataChunk, support)
     apriori.runApriori()
 
