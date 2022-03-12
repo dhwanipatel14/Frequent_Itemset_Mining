@@ -127,9 +127,9 @@ class Multistage:
         start_time = datetime.now()
 
         frequentItems , buckets = self.firstPass()
-        mapValues(buckets, self.support)
+        createBitmap(buckets, self.support)
         rehashedBuckets = self.secondPass(frequentItems, buckets)
-        mapValues(rehashedBuckets, self.support)
+        createBitmap(rehashedBuckets, self.support)
         candidatePairs = self.thirdPass(frequentItems, buckets, rehashedBuckets)
         frequentItemSet = self.frequentPairs(candidatePairs)
 
@@ -147,7 +147,7 @@ class Multistage:
         print("-----------------------------------------------------") 
 
 
-def mapValues(hashTable, support):
+def createBitmap(hashTable, support):
     for key, value in hashTable.items():
         if value < support:
             hashTable[key] = 0
