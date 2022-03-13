@@ -1,4 +1,5 @@
 
+import argparse
 from datetime import datetime
 from textwrap import indent
 
@@ -147,13 +148,21 @@ def hashFunction( num1, num2):
     
 if __name__ == "__main__":
 
-    dataChunk = 10
-    support= 10
+    parser = argparse.ArgumentParser(description='Process the data')
+    parser.add_argument('-f', dest='inputFile', default=None, help='Name of the file containing the data')
+    parser.add_argument('-d', dest='dataChunk', default=100, help='% of data/buckets you would want to run apriory on(default=100%)')
+    parser.add_argument('-t', dest='supportThreshold', default=10, help='Support Threshold in terms of percentage(default=10%)')
+
+    args = parser.parse_args()
+    inputFile = args.inputFile
+    dataChunk = float(args.dataChunk)
+    support = float(args.supportThreshold)
+
+    if inputFile is None:
+        inputFile = input("Enter the data file name: ")
 
     
-    input_file = input("Enter the data file name: ")
-    
-    pcy = Pcy(input_file, dataChunk, support)
+    pcy = Pcy(inputFile, dataChunk, support)
     pcy.runPcy()
 
         
