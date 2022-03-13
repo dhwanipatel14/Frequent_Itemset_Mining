@@ -2,6 +2,8 @@ import argparse
 from asyncore import read
 import datetime
 
+from matplotlib import pyplot as plt
+
 class Apriori:
     def __init__(self, inputFile, dataChunk, support ):
         self.inputFile = inputFile
@@ -56,6 +58,7 @@ class Apriori:
         print("runtime: ", round(execution_time, 2))
         print("-----------------------------------------------------")
 
+        return execution_time
 
     def itemCount(self):
         data = self.readData()
@@ -113,14 +116,32 @@ class Apriori:
                 yield frozenset(bucket)
 
 if __name__ == '__main__':
-   
-    inputFile = input("Enter the data file name: ")
-    val = 1
-    dataChunk = 10
-    support = 10
+    parser = argparse.ArgumentParser(description='Process the data')
+    parser.add_argument('-f', dest='inputFile', default=None, help='Name of the file containing the data')
+    parser.add_argument('-d', dest='dataChunk', default=100, help='% of data/buckets you would want to run apriory on(default=100%)')
+    parser.add_argument('-t', dest='supportThreshold', default=10, help='Support Threshold in terms of percentage(default=10%)')
+
+    args = parser.parse_args()
+    inputFile = args.inputFile
+    dataChunk = float(args.dataChunk)
+    support = float(args.supportThreshold)
+
+    if inputFile is None:
+        inputFile = input("Enter the data file name: ")
+
     apriori = Apriori(inputFile, dataChunk, support)
     apriori.runApriori()
 
+    # chunks = [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # threshold = [1, 5, 10]
+    # exe_time = []
 
+    # for i in threshold:
+    #     for j in chunks:
+    #         exe_time.append(apriori.runApriori())
+    # print(exe_time)
+
+
+    
 
     
