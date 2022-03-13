@@ -14,7 +14,7 @@ class Pcy:
         with open(self.inputFile) as file:
             for i, _ in enumerate(file):
                 pass
-        #print("File length: {}", i)
+        print("File length: {}", i)
         return i + 1
 
     def readData(self):
@@ -75,8 +75,10 @@ class Pcy:
         for item, count in item_count.items() :
             if count >= self.support:
                 item = list(item)
+                print(frequentItems , count)
+                #print("FREQUENT: {} ", frequentItems)
                 frequentItems.append(item[0])
-        print("FREQUENT: ", frequentItems)
+        
         return frequentItems
 
     def secondPass(self, frequentItems, map):
@@ -92,10 +94,12 @@ class Pcy:
                     for j in range(i+1, length):
                         if bucket[j] in frequentItems:
                             if map[hashFunction(int(bucket[i]),int(bucket[j]))] == 1:
-                                pair = frozenset([bucket[i], bucket[j]])
-                                count[pair] = count.get(pair, 0) + 1
+                                if int(bucket[i]) == 32 and int(bucket[j]) == 39:
+                                    #print(hashFunction(int(bucket[i]),int(bucket[j]))])
+                                    pair = frozenset([bucket[i], bucket[j]])
+                                    count[pair] = count.get(pair, 0) + 1
         
-        print("ALLPairs: ", count)
+        #print("ALLPairs: ", count)
         return count
 
     def frequentPairs(self, allPairs):
@@ -103,7 +107,7 @@ class Pcy:
             for pair, count in allPairs.items():
                 if count >= self.support:
                     frequentItems[pair] = count
-            print("\n\n\nFrequentPairs: ", frequentItems)
+                    print(frequentItems, count)
             return frequentItems
 
     def runPcy(self):
@@ -113,6 +117,7 @@ class Pcy:
         mapValues(buckets, self.support)
         candidatePairs = self.secondPass(frequentItems, buckets)
         frequentItemSet = self.frequentPairs(candidatePairs)
+        print("\n\n", candidatePairs)
 
         end_time = datetime.now()                             # Total time required for execution
 
@@ -129,6 +134,7 @@ class Pcy:
 
 
 def mapValues(hashTable, support):
+    print("ASDUBASDOBASJDBAJSBD", hashTable.get(71))
     for key, value in hashTable.items():
         if value < support:
             hashTable[key] = 0
@@ -136,12 +142,12 @@ def mapValues(hashTable, support):
             hashTable[key] = 1
 
 def hashFunction( num1, num2):
-    return (num1*num2) % 5434
+    return (num1+num2) % 5434
 
     
 if __name__ == "__main__":
 
-    dataChunk = 100
+    dataChunk = 10
     support= 10
 
     

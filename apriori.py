@@ -12,7 +12,7 @@ class Apriori:
         with open(self.inputFile) as file:
             for i, _ in enumerate(file):
                 pass
-        #print("File length: {}", i)
+        print("File length: {}", i)
         return i + 1
 
     #getter
@@ -115,8 +115,9 @@ class Apriori:
 if __name__ == '__main__':
    
     inputFile = input("Enter the data file name: ")
-    dataChunk = 880
-    support = 1
+    val = 1
+    dataChunk = 10
+    support = 10
     apriori = Apriori(inputFile, dataChunk, support)
     apriori.runApriori()
 
