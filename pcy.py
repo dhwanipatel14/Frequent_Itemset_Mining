@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime
 from textwrap import indent
 
@@ -21,8 +22,7 @@ class Pcy:
             for i in range(1, self.dataChunk + 1):
                 bucket = f.readline()
                 bucket = bucket.strip().split()
-                yield frozenset(bucket)
-    
+                yield frozenset(bucket)                      # Making sure that the bucket only have unique items and bucket can not be modified(immutable)
      #getter
     @property
     def support(self):
@@ -43,8 +43,9 @@ class Pcy:
         self._dataChunk = int((data*buckets)//100)
 
    
+    def firstPass(self):  
 
-    def firstPass(self):
+    #   I used frozenset to represent a pair {i, j} instead of list or set since in hashmap can not have mutable key
         data = self.readData()
         count = {}
         buckets = {}
@@ -53,7 +54,6 @@ class Pcy:
             for item in bucket:
                 singleton = frozenset([item])
                 count[singleton] = count.get(singleton,0) + 1
-        #print("Count : ", count)
 
             bucketsLen = len(bucket)
             for i in range(bucketsLen - 1):
@@ -142,8 +142,15 @@ def hashFunction( num1, num2):
     
 if __name__ == "__main__":
 
-    dataChunk = 100
-    support= 10
+    parser = argparse.ArgumentParser(description='Process the data')
+    parser.add_argument('-f', dest='inputFile', default=None, help='Name of the file containing the data')
+    parser.add_argument('-d', dest='dataChunk', default=100, help='% of data/buckets you would want to run apriory on(default=100%)')
+    parser.add_argument('-t', dest='supportThreshold', default=10, help='Support Threshold in terms of percentage(default=10%)')
+
+    args = parser.parse_args()
+    inputFile = args.inputFile
+    dataChunk = float(args.dataChunk)
+    support = float(args.supportThreshold)
 
     
     input_file = input("Enter the data file name: ")
