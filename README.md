@@ -3,3 +3,7 @@ This repo uses two main algorithms to predict how to find frequent items pair fr
 1. Apriori
 2. PCY 
 
+Furthermore there are two versions of PCY implemented :
+1. Multistage
+2. Multihash 
+
