@@ -4,7 +4,7 @@ from textwrap import indent
 
 
 class Pcy:
-    def __init__(self, inputFile, dataChunk, support) :
+    def __init__(self, inputFile, dataChunk=40, support=1) :
         self.inputFile = inputFile
         self.dataChunk = dataChunk
         self.support = support
