@@ -77,7 +77,7 @@ class Multistage:
             if count >= self.support:
                 item = list(item)
                 frequentItems.append(item[0])
-        print("FREQUENT: ", frequentItems)
+        # print("FREQUENT: ", frequentItems)
         return frequentItems
 
     def secondPass(self, frequentItems, map):
@@ -94,8 +94,7 @@ class Multistage:
                             if map[hashFunction1(int(bucket[i]),int(bucket[j]))] == 1:
                                 index = hashFunction2(int(bucket[i]),int(bucket[j]))
                                 buckets[index] = buckets.get(index, 0) + 1
-        print(buckets)
-        print("\n Pass 2")
+        #print(buckets)
         return buckets
 
     def thirdPass(self, frequentItems, map1, map2):
@@ -121,7 +120,7 @@ class Multistage:
             for pair, count in allPairs.items():
                 if count >= self.support:
                     frequentItems[pair] = count
-            print("\n\n\nFrequentPairs: ", frequentItems)
+            # print("\n\n\nFrequentPairs: ", frequentItems)
             return frequentItems
 
     def runMultistage(self):
@@ -147,6 +146,7 @@ class Multistage:
         print("runtime: ", round(execution_time, 2))
         print("-----------------------------------------------------") 
 
+        return execution_time
 
 def createBitmap(hashTable, support):
     for key, value in hashTable.items():
@@ -160,7 +160,6 @@ def hashFunction1( num1, num2):
 
 def hashFunction2( num1, num2):
     return (num1 + num2) % 2321
-
 
     
 if __name__ == "__main__":
@@ -180,6 +179,14 @@ if __name__ == "__main__":
     pcy = Multistage(inputFile, dataChunk, support)
     pcy.runMultistage()
 
+    # chunks = [10, 50, 100]
+    # threshold = [1, 5, 10]
+    # exe_time = []
+
+    # for i in threshold:
+    #     for j in chunks:
+    #         mh = Multistage("retail.txt", j, i)
+    #         exe_time.append(mh.runMultistage)
         
 
 

@@ -129,6 +129,7 @@ class Multihash:
         print("runtime: ", round(execution_time, 2))
         print("-----------------------------------------------------") 
 
+        return execution_time
 
 def createBitmap(hashTable, support):
     for key, value in hashTable.items():
@@ -161,6 +162,16 @@ if __name__ == "__main__":
     
     pcy = Multihash(inputFile, dataChunk, support)
     pcy.runMultihash()
+
+    # chunks = [10, 50, 100]
+    # threshold = [1, 5, 10]
+    # exe_time = []
+
+    # for i in threshold:
+    #     for j in chunks:
+    #         mh = Multihash("retail.txt", j, i)
+    #         exe_time.append(mh.runMultihash)
+    # # print(exe_time)
 
         
 

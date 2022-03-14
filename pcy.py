@@ -1,5 +1,3 @@
-
-import argparse
 from datetime import datetime
 from textwrap import indent
 
@@ -15,7 +13,7 @@ class Pcy:
         with open(self.inputFile) as file:
             for i, _ in enumerate(file):
                 pass
-        print("File length: {}", i)
+        #print("File length: {}", i)
         return i + 1
 
     def readData(self):
@@ -76,10 +74,8 @@ class Pcy:
         for item, count in item_count.items() :
             if count >= self.support:
                 item = list(item)
-                print(frequentItems , count)
-                #print("FREQUENT: {} ", frequentItems)
                 frequentItems.append(item[0])
-        
+        # print("FREQUENT: ", frequentItems)
         return frequentItems
 
     def secondPass(self, frequentItems, map):
@@ -94,13 +90,11 @@ class Pcy:
                 if bucket[i] in frequentItems : 
                     for j in range(i+1, length):
                         if bucket[j] in frequentItems:
-                            if map[hashFunction(int(bucket[i]),int(bucket[j]))] == 1:
-                                if int(bucket[i]) == 32 and int(bucket[j]) == 39:
-                                    #print(hashFunction(int(bucket[i]),int(bucket[j]))])
-                                    pair = frozenset([bucket[i], bucket[j]])
-                                    count[pair] = count.get(pair, 0) + 1
+                            if map[hashFunction(int(bucket[i]),int(bucket[j]))%5432] == 1:
+                                pair = frozenset([bucket[i], bucket[j]])
+                                count[pair] = count.get(pair, 0) + 1
         
-        #print("ALLPairs: ", count)
+        # print("ALLPairs: ", count)
         return count
 
     def frequentPairs(self, allPairs):
@@ -108,7 +102,7 @@ class Pcy:
             for pair, count in allPairs.items():
                 if count >= self.support:
                     frequentItems[pair] = count
-                    print(frequentItems, count)
+            #print("\n\n\nFrequentPairs: ", frequentItems)
             return frequentItems
 
     def runPcy(self):
@@ -118,7 +112,6 @@ class Pcy:
         mapValues(buckets, self.support)
         candidatePairs = self.secondPass(frequentItems, buckets)
         frequentItemSet = self.frequentPairs(candidatePairs)
-        print("\n\n", candidatePairs)
 
         end_time = datetime.now()                             # Total time required for execution
 
@@ -133,9 +126,10 @@ class Pcy:
         print("runtime: ", round(execution_time, 2))
         print("-----------------------------------------------------") 
 
+        return execution_time
+
 
 def mapValues(hashTable, support):
-    print("ASDUBASDOBASJDBAJSBD", hashTable.get(71))
     for key, value in hashTable.items():
         if value < support:
             hashTable[key] = 0
@@ -143,28 +137,26 @@ def mapValues(hashTable, support):
             hashTable[key] = 1
 
 def hashFunction( num1, num2):
-    return (num1+num2) % 5434
+    return (num1*num2) % 5434
 
     
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Process the data')
-    parser.add_argument('-f', dest='inputFile', default=None, help='Name of the file containing the data')
-    parser.add_argument('-d', dest='dataChunk', default=100, help='% of data/buckets you would want to run apriory on(default=100%)')
-    parser.add_argument('-t', dest='supportThreshold', default=10, help='Support Threshold in terms of percentage(default=10%)')
-
-    args = parser.parse_args()
-    inputFile = args.inputFile
-    dataChunk = float(args.dataChunk)
-    support = float(args.supportThreshold)
-
-    if inputFile is None:
-        inputFile = input("Enter the data file name: ")
+    dataChunk = 100
+    support= 10
 
     
-    pcy = Pcy(inputFile, dataChunk, support)
+    input_file = input("Enter the data file name: ")
+    
+    pcy = Pcy(input_file, dataChunk, support)
     pcy.runPcy()
 
-        
+    # chunks = [10, 50, 100]
+    # threshold = [1, 5, 10]
+    # exe_time = []
 
-
+    # for i in threshold:
+    #     for j in chunks:
+    #         pcy = Pcy("retail.txt", j, i)
+    #         exe_time.append(pcy.runPcy())
+    # # print(exe_time)

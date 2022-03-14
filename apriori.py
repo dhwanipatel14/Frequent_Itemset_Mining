@@ -14,7 +14,7 @@ class Apriori:
         with open(self.inputFile) as file:
             for i, _ in enumerate(file):
                 pass
-        print("File length: {}", i)
+        #print("File length: {}", i)
         return i + 1
 
     #getter
@@ -50,8 +50,7 @@ class Apriori:
         
         total_candidate_pairs = len(pairs_count)
         total_frequent_pair = len(frequent_item_set)
-        print("-----------------------------------------------------")
-        print("Total items", len(item_count))
+        print("Total items:", len(item_count))
         print("Total candidate pairs: ", total_candidate_pairs)
         print("Total frequent pairs: ", total_frequent_pair)
         print("Total false positives: ", total_candidate_pairs - total_frequent_pair)
@@ -132,14 +131,15 @@ if __name__ == '__main__':
     apriori = Apriori(inputFile, dataChunk, support)
     apriori.runApriori()
 
-    # chunks = [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # chunks = [10, 50, 100]
     # threshold = [1, 5, 10]
     # exe_time = []
 
     # for i in threshold:
     #     for j in chunks:
+    #         apriori = Apriori("retail.txt", j, i)
     #         exe_time.append(apriori.runApriori())
-    # print(exe_time)
+    # # print(exe_time)
 
 
     
