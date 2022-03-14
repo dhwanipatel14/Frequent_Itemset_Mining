@@ -1,9 +1,9 @@
 import argparse
 from asyncore import read
 import datetime
-
 from matplotlib import pyplot as plt
 
+#Apriori algorithm 
 class Apriori:
     def __init__(self, inputFile, dataChunk, support ):
         self.inputFile = inputFile
@@ -14,7 +14,6 @@ class Apriori:
         with open(self.inputFile) as file:
             for i, _ in enumerate(file):
                 pass
-        #print("File length: {}", i)
         return i + 1
 
     #getter
@@ -40,13 +39,13 @@ class Apriori:
         start_time = datetime.datetime.now()    
         item_count = self.itemCount()                                    
         frequent_items = self.frequentItemCount(item_count)             # List of items which are frequent which we then use in second pass
-        pairs_count = self.getAllPairs(frequent_items)  # Second pass to find candidate pair
-        frequent_item_set = self.frequentPairs(pairs_count)   # frequent pairs 
+        pairs_count = self.getAllPairs(frequent_items)                  # Second pass to find candidate pair
+        frequent_item_set = self.frequentPairs(pairs_count)             # frequent pairs 
         
-        end_time = datetime.datetime.now()                                    # Stop Calculating time
+        end_time = datetime.datetime.now()                              # Stop Calculating time
 
         time_diff = (end_time - start_time)
-        execution_time = time_diff.total_seconds() * 1000                     # Total time required for execution 
+        execution_time = time_diff.total_seconds() * 1000                # Total time required for execution 
         
         total_candidate_pairs = len(pairs_count)
         total_frequent_pair = len(frequent_item_set)
@@ -59,7 +58,7 @@ class Apriori:
 
         return execution_time
 
-    def itemCount(self):
+    def itemCount(self):        #count number of times item has appereared
         data = self.readData()
         count = {}
         for bucket in data:
@@ -69,10 +68,8 @@ class Apriori:
         #print("Count : ", count)
         return count
     
-    def frequentItemCount(self, item_count):
-
+    def frequentItemCount(self, item_count):  #counts frequent items 
         frequentItems = []
-
         for item, count in item_count.items() :
             if count >= self.support:
                 item = list(item)
@@ -80,11 +77,9 @@ class Apriori:
         #print("FREQUENT: ", frequentItems)
         return frequentItems
     
-    def getAllPairs(self, frequentItems):
+    def getAllPairs(self, frequentItems): #function to get all pairs 
         data = self.readData()
-
         count = {}
-
         for bucket in data:
             bucket = list(bucket)
             length = len(bucket)
@@ -94,12 +89,11 @@ class Apriori:
                         if bucket[j] in frequentItems:
                           pair = frozenset([bucket[i], bucket[j]])
                           count[pair] = count.get(pair, 0) + 1
-        
         #print("ALLPairs: ", count)
         return count
 
     
-    def frequentPairs(self, allPairs):
+    def frequentPairs(self, allPairs):  #calculates all frequent pairs
         frequentItems = {}
         for pair, count in allPairs.items():
             if count >= self.support:
@@ -107,12 +101,12 @@ class Apriori:
         #print("FrequentPairs: ", frequentItems)
         return frequentItems
 
-    def readData(self):
+    def readData(self): 
         with open(self.inputFile, "r", newline="") as f:
             for i in range(1, self.dataChunk + 1):
                 bucket = f.readline()
-                bucket = bucket.strip().split()
-                yield frozenset(bucket)
+                bucket = bucket.strip().split()             # Save the items in the bucket in a list
+                yield frozenset(bucket)                     # Making sure that the bucket only have unique items and bucket can not be modified(immutable)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process the data')
@@ -131,6 +125,7 @@ if __name__ == '__main__':
     apriori = Apriori(inputFile, dataChunk, support)
     apriori.runApriori()
 
+    #CODE TO CALCULATE EXECUTION TIME
     # chunks = [10, 50, 100]
     # threshold = [1, 5, 10]
     # exe_time = []
