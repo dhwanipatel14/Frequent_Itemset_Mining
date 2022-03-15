@@ -1,4 +1,4 @@
-# Frequent_Itemset_Prediction
+# Frequent_Itemset_Mining
 This repo uses two main algorithms to predict how to find frequent items pair from the given data:
 1. Apriori
 2. PCY 
