@@ -66,7 +66,6 @@ class Pcy:
         # print("buckets: ", buckets)
         return frequentItems, buckets
         
-    
     def frequentItemCount(self, item_count):
 
         frequentItems = []
@@ -139,7 +138,6 @@ def mapValues(hashTable, support):
 def hashFunction( num1, num2):
     return (num1*num2) % 5434
 
-    
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Process the data')
